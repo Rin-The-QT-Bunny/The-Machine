@@ -47,7 +47,8 @@ def realize(program):
 
 
 image = readImage(path)
-c = torch.load("concept.pth")
+c = Conceptualizer()
+# torch.load("concept.pth")
 x = convert_to_data(image)
 
 optimizer =torch. optim.Adam(c.parameters(), lr=1e-4)
