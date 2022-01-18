@@ -18,6 +18,7 @@ from karazhan.uruloki.parser_trial import * # decomposition of program tree
 
 from config import *
 from image_net import *
+from DSL import *
 
 class DSL_Base:
     def __init__(self):
@@ -148,6 +149,7 @@ class VisualParser(nn.Module):
             if (index == 8):
                 operator = float(self.sf.sample(self.tsi(arg)+parse_state))
             else:
+                print(ops_dict)
                 operator = ops_dict[index+1]
             
                 
