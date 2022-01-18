@@ -17,8 +17,19 @@ from PIL import Image # load images
 from karazhan.uruloki.parser_trial import * # decomposition of program tree
 
 from config import *
-from DSL import *
 from image_net import *
+
+class DSL_Base:
+    def __init__(self):
+        self.size = 0
+        self.operators = ["root","whiteBoard","drawCircle","drawRectangle","Count","Union","Intersection","X","Y","Int256"]
+        self.ops = [1,2,3,4,5,6,7,8,9] # Notice that root is not considered in this place
+        self.arged_ops = ["Count","Union","Intersection","drawCircle","drawRectangle"] # these are operators with arguments
+        self.arguments = [0,1,2,3,4,5] # notice that arg 0 is the root argumnet
+        self.arg_dict = {"Count":[1],"Union":[2,3],"Intersection":[4,5],"drawCircle":[5,6,7,8],"drawRectangle":[9,10,11,12]}   # argument dictionary from operator to arguments
+        
+    def register_operator(self,op):
+        return 0
 
 # a patch fo the problem of zero parse
 def FilterEmpty(List):
@@ -141,7 +152,7 @@ class VisualParser(nn.Module):
             
                 
             self.program += str(operator)
-            if (operator == "whiteBoard"):
+            if (str(operator) == "whiteBoard"):
                 self.program += "()"
             # 2. pass the semantics down to next level if required
             self.count +=1
@@ -184,6 +195,7 @@ class VisualParser(nn.Module):
                 op = float(ops_sequence[self.count])
                 index = 9
             except:
+
                 index = ops_dict.index(ops_sequence[self.count])
 
             self.log_p  = self.log_p - torch.log(pdf[index-1])
