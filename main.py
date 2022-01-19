@@ -48,7 +48,7 @@ def realize(program):
 
 image = readImage(path)
 c = Conceptualizer()
-# torch.load("concept.pth")
+#torch.load("concept.pth")
 x = convert_to_data(image)
 
 optimizer =torch. optim.Adam(c.parameters(), lr=1e-4)
@@ -67,7 +67,6 @@ samples = [
     "drawCircle(whiteBoard(),2.4683618545532227,2.1186287879943848,.40646553039551)",
     "drawCircle(whiteBoard(),2.0683618545532227,2.1186287879943848,.40646553039551)",
     "drawCircle(whiteBoard(),1.6683618545532227,2.1186287879943848,.40646553039551)",
-    
     "drawRectangle(whiteBoard(),1.6683618545532227,2.1186287879943848,.40646553039551,0.35)",
     "drawRectangle(whiteBoard(),1.6683618545532227,2.1186287879943848,.32,0.2)",
     "drawRectangle(whiteBoard(),3.6683618545532227,1.1186287879943848,.40646553039551,0.35)",
@@ -98,5 +97,9 @@ for i in range(1500):
     print(i,"Loss is ",Loss.detach().numpy())
     torch.save(c,"concept.pth")
  
-plt.imshow(eval(act))
+def trainDestuctor():
+    pass
     
+for i in range(len(samples)):
+    x= realize(samples[i])
+    print(c.representation(x))
