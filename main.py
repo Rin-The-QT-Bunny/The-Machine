@@ -20,6 +20,7 @@ from config import *
 from DSL import *
 from image_net import *
 from weaver import *
+from Boomsday.datatypes import *
 
 
 path = "C:/Users/doudou/Pictures/CLEVR.png"
@@ -46,12 +47,11 @@ def realize(program):
     return x
 
 
-image = readImage(path)
-c = Conceptualizer()
-#torch.load("concept.pth")
-x = convert_to_data(image)
+#c = Conceptualizer()
+c = torch.load("concept.pth")
 
-optimizer =torch. optim.Adam(c.parameters(), lr=1e-4)
+
+optimizer =torch.optim.Adam(c.parameters(), lr=4e-4)
 
 
 samples = [
@@ -67,6 +67,10 @@ samples = [
     "drawCircle(whiteBoard(),2.4683618545532227,2.1186287879943848,.40646553039551)",
     "drawCircle(whiteBoard(),2.0683618545532227,2.1186287879943848,.40646553039551)",
     "drawCircle(whiteBoard(),1.6683618545532227,2.1186287879943848,.40646553039551)",
+    
+    ]
+
+squareSamples = [
     "drawRectangle(whiteBoard(),1.6683618545532227,2.1186287879943848,.40646553039551,0.35)",
     "drawRectangle(whiteBoard(),1.6683618545532227,2.1186287879943848,.32,0.2)",
     "drawRectangle(whiteBoard(),3.6683618545532227,1.1186287879943848,.40646553039551,0.35)",
@@ -79,8 +83,8 @@ samples = [
     "drawRectangle(whiteBoard(),1.2683618545532227,3.1186287879943848,.12,0.23)",
     "drawRectangle(whiteBoard(),3.6683618545532227,2.4186287879943848,.30646553039551,0.15)",
     "drawRectangle(whiteBoard(),2.6683618545532227,3.4186287879943848,.12,0.2)"
-    
     ]
+
 
 
 for i in range(1500):
@@ -95,11 +99,27 @@ for i in range(1500):
     Loss.backward()
     optimizer.step()
     print(i,"Loss is ",Loss.detach().numpy())
-    torch.save(c,"concept.pth")
- 
+    torch.save(c,"ck.pth")
+
 def trainDestuctor():
     pass
     
 for i in range(len(samples)):
     x= realize(samples[i])
     print(c.representation(x))
+
+
+"""
+X = [0,1];Y = [1,2]
+
+def Union(a,b):
+    if(a == X and b == Y):
+        return [0,1,2]
+
+def Intersection(a,b):
+    if (a == X and b == Y):
+        return 
+    
+def Count(x):
+    return len(x)
+"""

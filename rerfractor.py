@@ -23,6 +23,12 @@ n4.attachFrom(n1,"l4")
 n5 = Node("val5")
 n5.attachFrom(n2,"l5")
 
+n6 = Node("val6")
+n6.attachFrom(n3,"l6")
+
+n7 = Node("val7")
+n7.attachFrom(n4,"l7")
+
 t = Tree(root)
 
 plotTree(t)

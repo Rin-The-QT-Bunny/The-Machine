@@ -90,7 +90,7 @@ class VisualParser(nn.Module):
         self.fGRU = torch.nn.GRU(word_dim,state_dim,1)
         self.bGRU = torch.nn.GRU(state_dim,state_dim,1)
         self.namo = "Conceptualizer"
-        self.DSL = DSL_Base()
+        self.DSL = DSL
         
         self.tsi = nn.Linear(args_dim,state_dim)
         
