@@ -31,6 +31,9 @@ for i in range(10):
     idx = data.tokenize_data(st)[0][2]
     symbol_id_collection.append(idx)
 
+def attention(q,words):
+    att = torch.softmax(torch.matmul(words,q.permute(1,0)),-2)
+    return torch.matmul(att.permute(1,0),words)
 
 def del_tensor_ele(arr,index):
     arr1 = arr[0:index]
@@ -42,6 +45,11 @@ class SymbolNet(nn.Module):
         super().__init__()
         self.id = name
         self.wordvecs = nn.Embedding(10000, 232)
+        
+        self.pfc1 = nn.Linear(232,100)
+        self.pfc2 = nn.Linear(100,64)
+        #self.pfca = nn.Linear(64,100)
+        self.pfc3 = nn.Linear(64,232)
     
     def forward(self,x):
         # shape : [1,n]
@@ -49,8 +57,11 @@ class SymbolNet(nn.Module):
         symbolCount = 0
         # 1.step:
         X = torch.tensor(x)
-        wvectors = self.wordvecs(X)
-        embeds =wvectors
+        wvectors = self.wordvecs(X)[0]
+        
+        q = self.pfc3(self.pfc2(self.pfc1(wvectors)))
+        embeds =attention(q,wvectors)
+        embeds = torch.reshape(embeds,[1,-1,232])
         reserves = []
         # 2.step:
         for i in range(len(x[0])):
@@ -248,7 +259,7 @@ class Parser(nn.Module):
         operators = []
         operators.extend(self.DSL.operators)
         operators.extend(self.STOP)
-
+        
         parse(x,root,ops,operators,ops_sequence)
         return self.program,self.log_p
     
@@ -280,8 +291,8 @@ class Parser(nn.Module):
             program,loss = self.convert(semantics,sequence[0])
         return program, loss
     
-    def train(self,tasks,EPOCH):
-       optimizer =torch. optim.Adam(psr.parameters(), lr=2e-4)
+    def train(self,tasks,EPOCH,rate = 8e-5):
+       optimizer =torch. optim.Adam(psr.parameters(), lr=rate)
        for epoch in range(EPOCH):
            Loss = 0.0
            for i in range(len(tasks)):
@@ -329,8 +340,14 @@ def visualize_attention(att):
 psr = Parser()
 tasks = data.train_set[:10]
 from karazhan.curator import *
+
 tasks = data.make_tasks(ArithMatics)
-psr.train(tasks,3000)
+psr.train(tasks,3000, 1e-4)
 
 
 psr.run(tasks[0][0],tasks[0][3])
+psr.run(data.convert_to_data(p),extract_symbols(p))
+
+from sklearn.manifold import TSNE 
+ 
+tsne = TSNE(n_components=2) 
